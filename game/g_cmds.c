@@ -900,6 +900,42 @@ void Cmd_PlayerList_f(edict_t *ent)
 }
 
 
+void Cmd_SpawnNormal_f(edict_t *ent)
+{
+	edict_t	*testEnt;
+	testEnt = G_Spawn();
+	VectorCopy(ent->s.origin, testEnt->s.origin);
+	testEnt->goalentity = ent;
+
+	SP_tower_1(testEnt);
+}
+void Cmd_SpawnFast_f(edict_t *ent)
+{
+	edict_t	*testEnt;
+	testEnt = G_Spawn();
+	VectorCopy(ent->s.origin, testEnt->s.origin);
+
+	SP_monster_parasite(testEnt);
+}
+void Cmd_SpawnSlow_f(edict_t *ent)
+{
+	edict_t	*testEnt;
+	testEnt = G_Spawn();
+	VectorCopy(ent->s.origin, testEnt->s.origin);
+
+	SP_monster_tank(testEnt);
+}
+void Cmd_SpawnBoss_f(edict_t *ent)
+{
+	edict_t	*testEnt;
+	testEnt = G_Spawn();
+	VectorCopy(ent->s.origin, testEnt->s.origin);
+
+	SP_monster_supertank(testEnt);
+}
+
+
+
 /*
 =================
 ClientCommand
@@ -945,6 +981,17 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "use") == 0)
 		Cmd_Use_f (ent);
+
+	//Commands for spawns
+	else if (Q_stricmp(cmd, "spawnNormal") == 0)
+		Cmd_SpawnNormal_f(ent);
+	else if (Q_stricmp(cmd, "spawnFast") == 0)
+		Cmd_SpawnFast_f(ent);
+	else if (Q_stricmp(cmd, "spawnSlow") == 0)
+		Cmd_SpawnSlow_f(ent);
+	else if (Q_stricmp(cmd, "spawnBoss") == 0)
+		Cmd_SpawnBoss_f(ent);
+
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);
 	else if (Q_stricmp (cmd, "give") == 0)

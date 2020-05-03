@@ -282,10 +282,12 @@ mmove_t soldier_move_walk2 = {FRAME_walk209, FRAME_walk218, soldier_frames_walk2
 
 void soldier_walk (edict_t *self)
 {
+	/*
 	if (random() < 0.5)
 		self->monsterinfo.currentmove = &soldier_move_walk1;
 	else
 		self->monsterinfo.currentmove = &soldier_move_walk2;
+	*/
 }
 
 
@@ -304,17 +306,18 @@ mmove_t soldier_move_start_run = {FRAME_run01, FRAME_run02, soldier_frames_start
 
 mframe_t soldier_frames_run [] =
 {
-	ai_run, 10, NULL,
-	ai_run, 11, NULL,
-	ai_run, 11, NULL,
-	ai_run, 16, NULL,
-	ai_run, 10, NULL,
-	ai_run, 15, NULL
+	ai_run, 5, NULL,
+	ai_run, 5, NULL,
+	ai_run, 5, NULL,
+	ai_run, 5, NULL,
+	ai_run, 5, NULL,
+	ai_run, 5, NULL
 };
 mmove_t soldier_move_run = {FRAME_run03, FRAME_run08, soldier_frames_run, NULL};
 
 void soldier_run (edict_t *self)
 {
+	
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
 		self->monsterinfo.currentmove = &soldier_move_stand1;
@@ -331,6 +334,7 @@ void soldier_run (edict_t *self)
 	{
 		self->monsterinfo.currentmove = &soldier_move_start_run;
 	}
+	
 }
 
 
@@ -771,6 +775,7 @@ mmove_t soldier_move_attack6 = {FRAME_runs01, FRAME_runs14, soldier_frames_attac
 
 void soldier_attack(edict_t *self)
 {
+	/*
 	if (self->s.skinnum < 4)
 	{
 		if (random() < 0.5)
@@ -782,6 +787,7 @@ void soldier_attack(edict_t *self)
 	{
 		self->monsterinfo.currentmove = &soldier_move_attack4;
 	}
+	*/
 }
 
 
@@ -1145,6 +1151,7 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 {
 	int		n;
 
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -1201,6 +1208,7 @@ void SP_monster_soldier_x (edict_t *self)
 {
 
 	self->s.modelindex = gi.modelindex ("models/monsters/soldier/tris.md2");
+
 	self->monsterinfo.scale = MODEL_SCALE;
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
