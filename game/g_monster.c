@@ -360,12 +360,14 @@ void M_SetEffects (edict_t *ent)
 
 void M_MoveFrame (edict_t *self)
 {
+	
 	mmove_t	*move;
 	int		index;
 
 	move = self->monsterinfo.currentmove;
 	self->nextthink = level.time + FRAMETIME;
 
+	
 	if ((self->monsterinfo.nextframe) && (self->monsterinfo.nextframe >= move->firstframe) && (self->monsterinfo.nextframe <= move->lastframe))
 	{
 		self->s.frame = self->monsterinfo.nextframe;
@@ -403,16 +405,22 @@ void M_MoveFrame (edict_t *self)
 			}
 		}
 	}
-
+	
 	index = self->s.frame - move->firstframe;
+	
+
+	// Saucy: Tower problem here, check move funcs
+
 	if (move->frame[index].aifunc)
 		if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 			move->frame[index].aifunc (self, move->frame[index].dist * self->monsterinfo.scale);
 		else
 			move->frame[index].aifunc (self, 0);
-
+			
+		
 	if (move->frame[index].thinkfunc)
 		move->frame[index].thinkfunc (self);
+		
 }
 
 
@@ -427,6 +435,7 @@ void monster_think (edict_t *self)
 	M_CatagorizePosition (self);
 	M_WorldEffects (self);
 	M_SetEffects (self);
+
 }
 
 
@@ -533,6 +542,7 @@ void monster_death_use (edict_t *self)
 
 qboolean monster_start (edict_t *self)
 {
+	
 	if (deathmatch->value)
 	{
 		G_FreeEdict (self);
@@ -545,11 +555,14 @@ qboolean monster_start (edict_t *self)
 		self->spawnflags |= 1;
 //		gi.dprintf("fixed spawnflags on %s at %s\n", self->classname, vtos(self->s.origin));
 	}
-
+	
 	if (!(self->monsterinfo.aiflags & AI_GOOD_GUY))
 		level.total_monsters++;
 
+	
 	self->nextthink = level.time + FRAMETIME;
+	
+
 	self->svflags |= SVF_MONSTER;
 	self->s.renderfx |= RF_FRAMELERP;
 	self->takedamage = DAMAGE_AIM;
@@ -557,11 +570,11 @@ qboolean monster_start (edict_t *self)
 	self->use = monster_use;
 	self->max_health = self->health;
 	self->clipmask = MASK_MONSTERSOLID;
-
+	
 	self->s.skinnum = 0;
 	self->deadflag = DEAD_NO;
 	self->svflags &= ~SVF_DEADMONSTER;
-
+	
 	if (!self->monsterinfo.checkattack)
 		self->monsterinfo.checkattack = M_CheckAttack;
 	VectorCopy (self->s.origin, self->s.old_origin);
@@ -576,12 +589,15 @@ qboolean monster_start (edict_t *self)
 	// randomize what frame they start on
 	if (self->monsterinfo.currentmove)
 		self->s.frame = self->monsterinfo.currentmove->firstframe + (rand() % (self->monsterinfo.currentmove->lastframe - self->monsterinfo.currentmove->firstframe + 1));
-
+	
 	return true;
 }
 
+
+
 void monster_start_go (edict_t *self)
 {
+
 	vec3_t	v;
 
 	if (self->health <= 0)
@@ -614,7 +630,7 @@ void monster_start_go (edict_t *self)
 		if (fixup)
 			self->target = NULL;
 	}
-
+	
 	// validate combattarget
 	if (self->combattarget)
 	{
@@ -632,7 +648,7 @@ void monster_start_go (edict_t *self)
 			}
 		}
 	}
-
+	
 	if (self->target)
 	{
 		self->goalentity = self->movetarget = G_PickTarget(self->target);
@@ -662,10 +678,13 @@ void monster_start_go (edict_t *self)
 		self->monsterinfo.pausetime = 100000000;
 		self->monsterinfo.stand (self);
 	}
-
+	
 	self->think = monster_think;
 	self->nextthink = level.time + FRAMETIME;
+	
 }
+
+
 
 
 void walkmonster_start_go (edict_t *self)
@@ -693,6 +712,11 @@ void walkmonster_start (edict_t *self)
 {
 	self->think = walkmonster_start_go;
 	monster_start (self);
+}
+void tower_start(edict_t *self)
+{
+	self->think = walkmonster_start_go;
+	monster_start(self);
 }
 
 

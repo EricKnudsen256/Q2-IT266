@@ -1,21 +1,12 @@
-﻿Build started 5/2/2020 9:03:24 PM.
+﻿Build started 5/4/2020 5:39:07 PM.
      1>Project "C:\Users\Eric\Git\IT266\quake2-full\game\game.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(357,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Z7 /nologo /W4 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\release\\" /Fd".\release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt t_tower.c
-         t_tower.c
-     1>t_tower.c(22): warning C4100: 'damage' : unreferenced formal parameter
-     1>t_tower.c(22): warning C4100: 'kick' : unreferenced formal parameter
-     1>t_tower.c(22): warning C4100: 'other' : unreferenced formal parameter
-     1>t_tower.c(25): warning C4101: 'n' : unreferenced local variable
-     1>t_tower.c(24): warning C4101: 'r' : unreferenced local variable
-     1>t_tower.c(116): warning C4047: '=' : 'mmove_t *' differs in levels of indirection from 'void (__cdecl *)(edict_t *)'
-     1>t_tower.c(111): warning C4100: 'other' : unreferenced formal parameter
-     1>t_tower.c(135): warning C4100: 'point' : unreferenced formal parameter
-     1>t_tower.c(135): warning C4100: 'damage' : unreferenced formal parameter
-     1>t_tower.c(135): warning C4100: 'attacker' : unreferenced formal parameter
-     1>t_tower.c(135): warning C4100: 'inflictor' : unreferenced formal parameter
-     1>t_tower.c(137): warning C4101: 'n' : unreferenced local variable
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Z7 /nologo /W4 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\release\\" /Fd".\release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt g_ai.c
+         g_ai.c
+     1>g_ai.c(61): warning C4127: conditional expression is constant
+     1>g_ai.c(419): warning C4101: 'len' : unreferenced local variable
+     1>g_ai.c(810): warning C4100: 'dist' : unreferenced formal parameter
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\SteamLibrary\steamapps\common\Quake 2 TD\baseq2\gamex86.dll" /INCREMENTAL:NO /NOLOGO winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:".\game.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"E:\SteamLibrary\steamapps\common\Quake 2 TD\baseq2\gamex86.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /BASE:"0x20000000" /DYNAMICBASE /NXCOMPAT /IMPLIB:".\..\release\gamex86.lib" /MACHINE:X86 /SAFESEH /DLL .\release\g_ai.obj
          .\release\g_chase.obj
@@ -72,4 +63,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.50
+Time Elapsed 00:00:00.49

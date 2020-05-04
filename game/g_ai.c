@@ -270,9 +270,9 @@ int range (edict_t *self, edict_t *other)
 	len = VectorLength (v);
 	if (len < MELEE_DISTANCE)
 		return RANGE_MELEE;
-	if (len < 500)
+	if (len < 350)
 		return RANGE_NEAR;
-	if (len < 1000)
+	if (len < 750)
 		return RANGE_MID;
 	return RANGE_FAR;
 }
@@ -409,6 +409,17 @@ qboolean FindTarget (edict_t *self)
 	edict_t		*client;
 	qboolean	heardit;
 	int			r;
+	
+
+
+	//Saucy: Tower shit
+	edict_t		*e;
+	int			i;
+	vec3_t		v;
+	float		len;
+	float		closest;
+		
+
 
 	if (self->monsterinfo.aiflags & AI_GOOD_GUY)
 	{
@@ -417,10 +428,9 @@ qboolean FindTarget (edict_t *self)
 			if (strcmp(self->goalentity->classname, "target_actor") == 0)
 				return false;
 		}
-
-		//FIXME look for monsters?
 		return false;
 	}
+
 
 	// if we're going to a combat point, just proceed
 	if (self->monsterinfo.aiflags & AI_COMBAT_POINT)
@@ -574,6 +584,35 @@ qboolean FindTarget (edict_t *self)
 //
 // got one
 //
+
+	if (self->monsterinfo.aiflags & AI_TOWER)
+	{
+		
+		closest = 10000;
+		for (i = 0; i < globals.num_edicts; i++)
+		{
+
+			e = &g_edicts[i];
+			VectorSubtract(self->s.origin, e->s.origin, v);
+
+			if ((VectorLength(v) < closest) && (e->monsterinfo.aiflags & AI_ENEMY))
+			{
+				closest = VectorLength(v);
+				self->enemy = e;
+			}
+		}
+
+
+		gi.dprintf("(%i %i %i)\n", (int)self->enemy->s.origin[0], (int)self->enemy->s.origin[1], (int)self->enemy->s.origin[2]);
+
+		if (self->enemy == client)
+		{
+			self->enemy = NULL;
+			return false;
+		}
+
+	}
+
 	FoundTarget (self);
 
 	if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET) && (self->monsterinfo.sight))

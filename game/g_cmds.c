@@ -916,6 +916,7 @@ void Cmd_SpawnFast_f(edict_t *ent)
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
 	SP_monster_parasite(testEnt);
+	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 void Cmd_SpawnSlow_f(edict_t *ent)
 {
@@ -924,6 +925,7 @@ void Cmd_SpawnSlow_f(edict_t *ent)
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
 	SP_monster_tank(testEnt);
+	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 void Cmd_SpawnBoss_f(edict_t *ent)
 {
@@ -932,6 +934,7 @@ void Cmd_SpawnBoss_f(edict_t *ent)
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
 	SP_monster_supertank(testEnt);
+	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 
 
