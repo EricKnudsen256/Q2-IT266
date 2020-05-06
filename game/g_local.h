@@ -894,6 +894,7 @@ struct gclient_s
 	qboolean	showinventory;		// set layout stat
 	qboolean	showhelp;
 	qboolean	showhelpicon;
+	qboolean	showBuy;
 
 	int			ammo_index;
 

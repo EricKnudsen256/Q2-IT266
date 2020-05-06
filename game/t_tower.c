@@ -390,46 +390,8 @@ mmove_t tower_move_pain4 = { FRAME_pain401, FRAME_pain417, tower_frames_pain4, t
 
 void tower_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
-	float	r;
-	int		n;
 
-	if (self->health < (self->max_health / 2))
-		self->s.skinnum |= 1;
-
-	if (level.time < self->pain_debounce_time)
-	{
-		if ((self->velocity[2] > 100) && ((self->monsterinfo.currentmove == &tower_move_pain1) || (self->monsterinfo.currentmove == &tower_move_pain2) || (self->monsterinfo.currentmove == &tower_move_pain3)))
-			self->monsterinfo.currentmove = &tower_move_pain4;
-		return;
-	}
-
-	self->pain_debounce_time = level.time;
-
-	n = self->s.skinnum | 1;
-	if (n == 1)
-		gi.sound(self, CHAN_VOICE, sound_pain_light, 1, ATTN_NORM, 0);
-	else if (n == 3)
-		gi.sound(self, CHAN_VOICE, sound_pain, 1, ATTN_NORM, 0);
-	else
-		gi.sound(self, CHAN_VOICE, sound_pain_ss, 1, ATTN_NORM, 0);
-
-	if (self->velocity[2] > 100)
-	{
-		self->monsterinfo.currentmove = &tower_move_pain4;
-		return;
-	}
-
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
-
-	r = random();
-
-	if (r < 0.33)
-		self->monsterinfo.currentmove = &tower_move_pain1;
-	else if (r < 0.66)
-		self->monsterinfo.currentmove = &tower_move_pain2;
-	else
-		self->monsterinfo.currentmove = &tower_move_pain3;
+	self->health = 100000;
 }
 
 
@@ -485,7 +447,7 @@ void tower_fire(edict_t *self, int flash_number)
 
 	if (self->s.skinnum <= 1)
 	{
-		monster_fire_blaster(self, start, aim, 5, 600, flash_index, EF_BLASTER);
+		monster_fire_blaster(self, start, aim, 100, 600, flash_index, EF_BLASTER);
 	}
 	else if (self->s.skinnum <= 3)
 	{
@@ -514,8 +476,6 @@ void tower_fire1(edict_t *self)
 
 void tower_attack1_refire1(edict_t *self)
 {
-	if (self->s.skinnum > 1)
-		return;
 
 	if (self->enemy->health <= 0)
 		return;
@@ -527,8 +487,7 @@ void tower_attack1_refire1(edict_t *self)
 
 void tower_attack1_refire2(edict_t *self)
 {
-	if (self->s.skinnum < 2)
-		return;
+
 
 	if (self->enemy->health <= 0)
 		return;
@@ -546,8 +505,8 @@ mframe_t tower_frames_attack1[] =
 	ai_charge, 0, NULL,
 	ai_charge, 0, tower_attack1_refire1,
 	ai_charge, 0, NULL,
-	ai_charge, 0, tower_cock,
-	ai_charge, 0, tower_attack1_refire2,
+	ai_charge, 0, NULL,
+	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL
@@ -796,6 +755,7 @@ mmove_t tower_move_duck = { FRAME_duck01, FRAME_duck05, tower_frames_duck, tower
 
 void tower_dodge(edict_t *self, edict_t *attacker, float eta)
 {
+	/*
 	float	r;
 
 	r = random();
@@ -833,6 +793,7 @@ void tower_dodge(edict_t *self, edict_t *attacker, float eta)
 	}
 
 	self->monsterinfo.currentmove = &tower_move_attack3;
+	*/
 }
 
 
@@ -1215,6 +1176,63 @@ void SP_tower_1(edict_t *self)
 	gi.soundindex("tower/solatck2.wav");
 
 	self->s.skinnum = 0;
-	self->health = 20;
+	self->health = 100000;
+	self->gib_health = -30;
+}
+void SP_tower_2(edict_t *self)
+{
+	if (deathmatch->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	SP_tower_x(self);
+
+
+	gi.modelindex("models/objects/laser/tris.md2");
+	gi.soundindex("misc/lasfly.wav");
+	gi.soundindex("tower/solatck2.wav");
+
+	self->s.skinnum = 2;
+	self->health = 100000;
+	self->gib_health = -30;
+}
+void SP_tower_3(edict_t *self)
+{
+	if (deathmatch->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	SP_tower_x(self);
+
+
+	gi.modelindex("models/objects/laser/tris.md2");
+	gi.soundindex("misc/lasfly.wav");
+	gi.soundindex("tower/solatck2.wav");
+
+	self->s.skinnum = 4;
+	self->health = 100000;;
+	self->gib_health = -30;
+}
+void SP_tower_4(edict_t *self)
+{
+	if (deathmatch->value)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	SP_tower_x(self);
+
+
+	gi.modelindex("models/objects/laser/tris.md2");
+	gi.soundindex("misc/lasfly.wav");
+	gi.soundindex("tower/solatck2.wav");
+
+	self->s.skinnum = 1;
+	self->health = 100000;
 	self->gib_health = -30;
 }

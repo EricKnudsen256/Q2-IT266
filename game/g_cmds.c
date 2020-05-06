@@ -902,12 +902,16 @@ void Cmd_PlayerList_f(edict_t *ent)
 
 void Cmd_SpawnNormal_f(edict_t *ent)
 {
+	edict_t *goal;
+	goal = G_Find(NULL, FOFS(classname), "goal");
+
 	edict_t	*testEnt;
 	testEnt = G_Spawn();
 	VectorCopy(ent->s.origin, testEnt->s.origin);
-	testEnt->goalentity = ent;
+	testEnt->goalentity = goal;
 
-	SP_tower_1(testEnt);
+	SP_monster_soldier_light(testEnt);
+	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 void Cmd_SpawnFast_f(edict_t *ent)
 {
@@ -935,6 +939,128 @@ void Cmd_SpawnBoss_f(edict_t *ent)
 
 	SP_monster_supertank(testEnt);
 	testEnt->monsterinfo.aiflags = AI_ENEMY;
+}
+
+
+void Cmd_Tower1_f(edict_t *ent)
+{
+	if (globals.currentCash < 100)
+	{
+		gi.dprintf("Not enough money!\n");
+	}
+	else
+	{
+		globals.currentCash -= 100;
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->goalentity = ent;
+
+		SP_tower_1(testEnt);
+	}
+
+}
+void Cmd_Tower2_f(edict_t *ent)
+{
+	if (globals.currentCash < 200)
+	{
+		gi.dprintf("Not enough money!\n");
+	}
+	else
+	{
+		globals.currentCash -= 200;
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->goalentity = ent;
+
+		SP_tower_2(testEnt);
+	}
+}
+void Cmd_Tower3_f(edict_t *ent)
+{
+	if (globals.currentCash < 300)
+	{
+		gi.dprintf("Not enough money!\n");
+	}
+	else
+	{
+		globals.currentCash -= 300;
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->goalentity = ent;
+
+		SP_tower_3(testEnt);
+	}
+}
+void Cmd_Tower4_f(edict_t *ent)
+{
+	if (globals.currentCash < 400)
+	{
+		gi.dprintf("Not enough money!\n");
+	}
+	else
+	{
+		globals.currentCash -= 400;
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->goalentity = ent;
+
+		SP_tower_4(testEnt);
+	}
+}
+
+void Cmd_Start_f(edict_t *ent)
+{
+
+	if (globals.startPlaced)
+	{
+		gi.dprintf("Cannot place start, start already placed!\n");
+	}
+	else
+	{
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->goalentity = ent;
+
+		SP_start(testEnt);
+		globals.startPlaced = true;
+	}
+}
+
+void Cmd_Goal_f(edict_t *ent)
+{
+	if (globals.goalPlaced)
+	{
+		gi.dprintf("Cannot place goal, goal already placed!\n");
+	}
+	else
+	{
+		edict_t	*testEnt;
+		testEnt = G_Spawn();
+		VectorCopy(ent->s.origin, testEnt->s.origin);
+		testEnt->s.origin[2] -= 22;
+		testEnt->goalentity = ent;
+
+		SP_goal(testEnt);
+		globals.goalPlaced = true;
+	}
+}
+
+void Cmd_StartGame_f(edict_t *ent)
+{
+	if (globals.gameStarted)
+	{
+		gi.dprintf("Game Already In Progress!\n");
+	}
+	else
+	{
+		gi.dprintf("Game Started!\n");
+		globals.gameStarted = true;
+	}
 }
 
 
@@ -994,6 +1120,25 @@ void ClientCommand (edict_t *ent)
 		Cmd_SpawnSlow_f(ent);
 	else if (Q_stricmp(cmd, "spawnBoss") == 0)
 		Cmd_SpawnBoss_f(ent);
+
+	//Commands for buys
+	else if (Q_stricmp(cmd, "buy0") == 0)
+		Cmd_Tower1_f(ent);
+	else if (Q_stricmp(cmd, "buy1") == 0)
+		Cmd_Tower2_f(ent);
+	else if (Q_stricmp(cmd, "buy2") == 0)
+		Cmd_Tower3_f(ent);
+	else if (Q_stricmp(cmd, "buy3") == 0)
+		Cmd_Tower4_f(ent);
+
+	//Commands to place start/end
+	else if (Q_stricmp(cmd, "start") == 0)
+		Cmd_Start_f(ent);
+	else if (Q_stricmp(cmd, "goal") == 0)
+		Cmd_Goal_f(ent);
+	else if (Q_stricmp(cmd, "beginGame") == 0)
+		Cmd_StartGame_f(ent);
+
 
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);

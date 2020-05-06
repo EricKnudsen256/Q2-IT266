@@ -2136,6 +2136,7 @@ SAVEGAME MENU
 
 =============================================================================
 */
+
 static menuframework_s	s_savegame_menu;
 static menuaction_s		s_savegame_actions[MAX_SAVEGAMES];
 
@@ -2203,6 +2204,312 @@ void M_Menu_SaveGame_f (void)
 }
 
 
+/*
+=============================================================================
+
+TOWER BUY MENU
+
+=============================================================================
+*/
+#define	TOTAL_TOWERS	4
+
+static menuframework_s	s_buy_menu;
+static menuaction_s		s_buy_actions[5];
+
+void BuyCallback(void *self)
+{
+	menuaction_s *a = (menuaction_s *)self;
+
+	Cbuf_AddText(va("buy%i\n", a->generic.localdata[0]));
+	M_ForceMenuOff();
+}
+
+void Buy_MenuDraw(void)
+{
+
+	Menu_AdjustCursor(&s_buy_menu, 1);
+	Menu_Draw(&s_buy_menu);
+}
+
+void Buy_MenuInit(void)
+{
+	int i;
+
+	s_buy_menu.x = viddef.width / 2 - 120;
+	s_buy_menu.y = viddef.height / 2 - 58;
+	s_buy_menu.nitems = 0;
+
+
+	//Create tower buy bottons
+
+	s_buy_actions[0].generic.name = "$100: Tower 1";
+	s_buy_actions[0].generic.localdata[0] = 0;
+	s_buy_actions[0].generic.flags = QMF_LEFT_JUSTIFY;
+	s_buy_actions[0].generic.callback = BuyCallback;
+
+	s_buy_actions[0].generic.x = 0;
+	s_buy_actions[0].generic.y = (0)* 10;
+
+	s_buy_actions[0].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_buy_menu, &s_buy_actions[0]);
+
+
+	s_buy_actions[1].generic.name = "$200: Tower 2";
+	s_buy_actions[1].generic.localdata[1] = 1;
+	s_buy_actions[1].generic.flags = QMF_LEFT_JUSTIFY;
+	s_buy_actions[1].generic.callback = BuyCallback;
+
+	s_buy_actions[1].generic.x = 0;
+	s_buy_actions[1].generic.y = (1) * 10;
+
+	s_buy_actions[1].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_buy_menu, &s_buy_actions[1]);
+
+
+	s_buy_actions[2].generic.name = "$300: Tower 3";
+	s_buy_actions[2].generic.localdata[2] = 2;
+	s_buy_actions[2].generic.flags = QMF_LEFT_JUSTIFY;
+	s_buy_actions[2].generic.callback = BuyCallback;
+
+	s_buy_actions[2].generic.x = 0;
+	s_buy_actions[2].generic.y = (2) * 10;
+
+	s_buy_actions[2].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_buy_menu, &s_buy_actions[2]);
+
+
+	s_buy_actions[3].generic.name = "$400: Tower 4";
+	s_buy_actions[3].generic.localdata[3] = 3;
+	s_buy_actions[3].generic.flags = QMF_LEFT_JUSTIFY;
+	s_buy_actions[3].generic.callback = BuyCallback;
+
+	s_buy_actions[3].generic.x = 0;
+	s_buy_actions[3].generic.y = (3) * 10;
+
+	s_buy_actions[3].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_buy_menu, &s_buy_actions[3]);
+
+
+
+	s_buy_actions[4].generic.name = "Upgrade Closest Tower";
+	s_buy_actions[4].generic.localdata[4] = 4;
+	s_buy_actions[4].generic.flags = QMF_LEFT_JUSTIFY;
+	s_buy_actions[4].generic.callback = BuyCallback;
+
+	s_buy_actions[4].generic.x = 0;
+	s_buy_actions[4].generic.y = (4) * 10;
+
+	s_buy_actions[4].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_buy_menu, &s_buy_actions[4]);
+
+	
+
+}
+
+const char *Buy_MenuKey(int key)
+{
+
+	if (key == K_KP_DOWNARROW || key == K_DOWNARROW)
+	{
+
+		s_buy_menu.cursor++;
+		Menu_AdjustCursor(&s_buy_menu, 1);
+
+	}
+	if (key == K_KP_UPARROW || key == K_UPARROW)
+	{
+		s_buy_menu.cursor--;
+		Menu_AdjustCursor(&s_buy_menu, -1);
+	}
+
+	if (key == K_ENTER)
+	{
+		switch (s_buy_menu.cursor)
+		{
+		case 0:
+			Cbuf_AddText(va("buy0\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 1:
+			Cbuf_AddText(va("buy1\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 2:
+			Cbuf_AddText(va("buy2\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 3:
+			Cbuf_AddText(va("buy3\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 4:
+			Cbuf_AddText(va("upgrade\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 5:
+			Cbuf_AddText(va("start\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 6:
+			Cbuf_AddText(va("goal\n"));
+			M_ForceMenuOff();
+			break;
+		}
+	}
+	if (key == K_ESCAPE)
+	{
+		M_PopMenu();
+	}
+
+}
+
+void M_Menu_Buy_f(void)
+{
+	if (!Com_ServerState())
+		return;		// not playing a game
+
+	Buy_MenuInit();
+	M_PushMenu(Buy_MenuDraw, Buy_MenuKey);
+
+}
+
+
+/*
+=============================================================================
+
+GAME START MENU
+
+=============================================================================
+*/
+
+static menuframework_s	s_td_menu;
+static menuaction_s		s_td_actions[5];
+
+
+
+void TD_MenuDraw(void)
+{
+
+	Menu_AdjustCursor(&s_td_menu, 1);
+	Menu_Draw(&s_td_menu);
+}
+
+void TD_MenuInit(void)
+{
+	int i;
+
+	s_td_menu.x = viddef.width / 2 - 120;
+	s_td_menu.y = viddef.height / 2 - 58;
+	s_td_menu.nitems = 0;
+
+
+
+
+	s_td_actions[0].generic.name = "Place Start";
+	s_td_actions[0].generic.localdata[0] = 0;
+	s_td_actions[0].generic.flags = QMF_LEFT_JUSTIFY;
+	s_td_actions[0].generic.callback = BuyCallback;
+
+	s_td_actions[0].generic.x = 0;
+	s_td_actions[0].generic.y = (0) * 10;
+
+	s_td_actions[0].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_td_menu, &s_td_actions[0]);
+
+
+	s_td_actions[1].generic.name = "Place Goal";
+	s_td_actions[1].generic.localdata[1] = 1;
+	s_td_actions[1].generic.flags = QMF_LEFT_JUSTIFY;
+	s_td_actions[1].generic.callback = BuyCallback;
+
+	s_td_actions[1].generic.x = 0;
+	s_td_actions[1].generic.y = (1) * 10;
+
+	s_td_actions[1].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_td_menu, &s_td_actions[1]);
+
+	s_td_actions[2].generic.name = "Begin Game";
+	s_td_actions[2].generic.localdata[1] = 1;
+	s_td_actions[2].generic.flags = QMF_LEFT_JUSTIFY;
+	s_td_actions[2].generic.callback = BuyCallback;
+
+	s_td_actions[2].generic.x = 0;
+	s_td_actions[2].generic.y = (2) * 10;
+
+	s_td_actions[2].generic.type = MTYPE_ACTION;
+
+	Menu_AddItem(&s_td_menu, &s_td_actions[2]);
+
+
+}
+
+const char *TD_MenuKey(int key)
+{
+
+	if (key == K_KP_DOWNARROW || key == K_DOWNARROW)
+	{
+
+		s_td_menu.cursor++;
+		Menu_AdjustCursor(&s_td_menu, 1);
+
+	}
+	if (key == K_KP_UPARROW || key == K_UPARROW)
+	{
+		s_td_menu.cursor--;
+		Menu_AdjustCursor(&s_td_menu, -1);
+	}
+
+	if (key == K_ENTER)
+	{
+		switch (s_td_menu.cursor)
+		{
+		case 0:
+			Cbuf_AddText(va("start\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 1:
+			Cbuf_AddText(va("goal\n"));
+			M_ForceMenuOff();
+			break;
+
+		case 2:
+			Cbuf_AddText(va("beginGame\n"));
+			M_ForceMenuOff();
+			break;
+		}
+
+
+	}
+	if (key == K_ESCAPE)
+	{
+		M_PopMenu();
+	}
+
+}
+
+void M_Menu_TD_f(void)
+{
+	if (!Com_ServerState())
+		return;		// not playing a game
+
+	TD_MenuInit();
+	M_PushMenu(TD_MenuDraw, TD_MenuKey);
+
+}
 /*
 =============================================================================
 
@@ -3964,6 +4271,8 @@ void M_Init (void)
 	Cmd_AddCommand ("menu_options", M_Menu_Options_f);
 		Cmd_AddCommand ("menu_keys", M_Menu_Keys_f);
 	Cmd_AddCommand ("menu_quit", M_Menu_Quit_f);
+	Cmd_AddCommand("menu_buy", M_Menu_Buy_f);
+	Cmd_AddCommand("menu_td", M_Menu_TD_f);
 }
 
 

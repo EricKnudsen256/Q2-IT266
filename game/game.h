@@ -249,6 +249,12 @@ typedef struct
 	int			edict_size;
 	int			num_edicts;		// current number, <= max_edicts
 	int			max_edicts;
+	int			currentCash;	//Saucy: added cash
+	int			currentWave;
+	qboolean	startPlaced;
+	qboolean	goalPlaced;
+	qboolean	gameStarted;
+
 } game_export_t;
 
 game_export_t *GetGameApi (game_import_t *import);

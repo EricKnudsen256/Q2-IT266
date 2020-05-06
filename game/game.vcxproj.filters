@@ -162,6 +162,9 @@
     <ClCompile Include="t_tower.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="t_start.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="g_local.h">

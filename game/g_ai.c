@@ -603,7 +603,7 @@ qboolean FindTarget (edict_t *self)
 		}
 
 
-		gi.dprintf("(%i %i %i)\n", (int)self->enemy->s.origin[0], (int)self->enemy->s.origin[1], (int)self->enemy->s.origin[2]);
+		//gi.dprintf("(%i %i %i)\n", (int)self->enemy->s.origin[0], (int)self->enemy->s.origin[1], (int)self->enemy->s.origin[2]);
 
 		if (self->enemy == client)
 		{

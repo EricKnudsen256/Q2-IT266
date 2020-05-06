@@ -815,6 +815,7 @@ BLASTER / HYPERBLASTER
 
 void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, int effect)
 {
+	/*
 	vec3_t	forward, right;
 	vec3_t	start;
 	vec3_t	offset;
@@ -841,11 +842,14 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	gi.multicast (ent->s.origin, MULTICAST_PVS);
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
+	*/
+	
 }
 
 
 void Weapon_Blaster_Fire (edict_t *ent)
 {
+	/*
 	int		damage;
 
 	if (deathmatch->value)
@@ -854,14 +858,17 @@ void Weapon_Blaster_Fire (edict_t *ent)
 		damage = 10;
 	Blaster_Fire (ent, vec3_origin, damage, false, EF_BLASTER);
 	ent->client->ps.gunframe++;
+	*/
 }
 
 void Weapon_Blaster (edict_t *ent)
 {
+	/*
 	static int	pause_frames[]	= {19, 32, 0};
 	static int	fire_frames[]	= {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0};
 
 	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	*/
 }
 
 

@@ -608,6 +608,10 @@ void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
 
+	globals.currentCash = 5000;
+	globals.startPlaced = false;
+	globals.goalPlaced = false;
+
 	memset (&client->pers, 0, sizeof(client->pers));
 
 	item = FindItem("Blaster");
