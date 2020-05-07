@@ -333,6 +333,9 @@ void HuntTarget (edict_t *self)
 	vec3_t	vec;
 
 	self->goalentity = self->enemy;
+
+
+
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 		self->monsterinfo.stand (self);
 	else
@@ -342,10 +345,15 @@ void HuntTarget (edict_t *self)
 	// wait a while before first attack
 	if (!(self->monsterinfo.aiflags & AI_STAND_GROUND))
 		AttackFinished (self, 1);
+
+	
+
+
 }
 
 void FoundTarget (edict_t *self)
 {
+
 	// let other monsters see this monster for a while
 	if (self->enemy->client)
 	{
@@ -404,12 +412,12 @@ checked each frame.  This means multi player games will have slightly
 slower noticing monsters.
 ============
 */
-qboolean FindTarget (edict_t *self)
+qboolean FindTarget(edict_t *self)
 {
 	edict_t		*client;
 	qboolean	heardit;
 	int			r;
-	
+
 
 
 	//Saucy: Tower shit
@@ -418,7 +426,22 @@ qboolean FindTarget (edict_t *self)
 	vec3_t		v;
 	float		len;
 	float		closest;
-		
+	edict_t		*goal;
+
+
+	goal =	G_Find(NULL, FOFS(classname), "goal");
+
+	if (self->monsterinfo.aiflags & AI_ENEMY)
+	{
+		self->enemy = goal;
+		FoundTarget(self);
+		return true;
+	}
+
+
+
+
+
 
 
 	if (self->monsterinfo.aiflags & AI_GOOD_GUY)
@@ -436,15 +459,15 @@ qboolean FindTarget (edict_t *self)
 	if (self->monsterinfo.aiflags & AI_COMBAT_POINT)
 		return false;
 
-// if the first spawnflag bit is set, the monster will only wake up on
-// really seeing the player, not another monster getting angry or hearing
-// something
+	// if the first spawnflag bit is set, the monster will only wake up on
+	// really seeing the player, not another monster getting angry or hearing
+	// something
 
-// revised behavior so they will wake up if they "see" a player make a noise
-// but not weapon impact/explosion noises
+	// revised behavior so they will wake up if they "see" a player make a noise
+	// but not weapon impact/explosion noises
 
 	heardit = false;
-	if ((level.sight_entity_framenum >= (level.framenum - 1)) && !(self->spawnflags & 1) )
+	if ((level.sight_entity_framenum >= (level.framenum - 1)) && !(self->spawnflags & 1))
 	{
 		client = level.sight_entity;
 		if (client->enemy == self->enemy)
@@ -457,7 +480,7 @@ qboolean FindTarget (edict_t *self)
 		client = level.sound_entity;
 		heardit = true;
 	}
-	else if (!(self->enemy) && (level.sound2_entity_framenum >= (level.framenum - 1)) && !(self->spawnflags & 1) )
+	else if (!(self->enemy) && (level.sound2_entity_framenum >= (level.framenum - 1)) && !(self->spawnflags & 1))
 	{
 		client = level.sound2_entity;
 		heardit = true;
@@ -545,6 +568,7 @@ qboolean FindTarget (edict_t *self)
 				}
 			}
 		}
+
 	}
 	else	// heardit
 	{
@@ -613,7 +637,10 @@ qboolean FindTarget (edict_t *self)
 
 	}
 
-	FoundTarget (self);
+	//gi.dprintf("NEW TARGET\n");
+
+	FoundTarget(self);
+
 
 	if (!(self->monsterinfo.aiflags & AI_SOUND_TARGET) && (self->monsterinfo.sight))
 		self->monsterinfo.sight (self, self->enemy);
@@ -862,7 +889,7 @@ qboolean ai_checkattack (edict_t *self, float dist)
 			if (self->enemy->health <= -80)
 				hesDeadJim = true;
 		}
-		else
+		else if (!self->monsterinfo.aiflags & AI_ENEMY)
 		{
 			if (self->enemy->health <= 0)
 				hesDeadJim = true;

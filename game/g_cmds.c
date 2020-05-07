@@ -902,16 +902,16 @@ void Cmd_PlayerList_f(edict_t *ent)
 
 void Cmd_SpawnNormal_f(edict_t *ent)
 {
-	edict_t *goal;
-	goal = G_Find(NULL, FOFS(classname), "goal");
 
+	edict_t	*goal;
 	edict_t	*testEnt;
 	testEnt = G_Spawn();
 	VectorCopy(ent->s.origin, testEnt->s.origin);
-	testEnt->goalentity = goal;
+	
 
 	SP_monster_soldier_light(testEnt);
 	testEnt->monsterinfo.aiflags = AI_ENEMY;
+
 }
 void Cmd_SpawnFast_f(edict_t *ent)
 {

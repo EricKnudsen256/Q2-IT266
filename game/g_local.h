@@ -141,6 +141,7 @@ typedef enum
 #define AI_RESURRECTING			0x00004000
 #define AI_TOWER				0x00008000
 #define AI_ENEMY				0x00010000
+#define AI_FOUND_GOAL			0x00020000
 
 //monster attack state
 #define AS_STRAIGHT				1
