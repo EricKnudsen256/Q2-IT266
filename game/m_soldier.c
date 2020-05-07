@@ -334,7 +334,6 @@ void soldier_run (edict_t *self)
 	{
 		self->monsterinfo.currentmove = &soldier_move_start_run;
 	}
-	
 }
 
 
@@ -562,9 +561,9 @@ void soldier_attack1_refire2 (edict_t *self)
 
 mframe_t soldier_frames_attack1 [] =
 {
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL,
 	ai_charge, 0,  soldier_fire1,
+	ai_charge, 0,  NULL,
+	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  soldier_attack1_refire1,
@@ -895,6 +894,7 @@ void soldier_dead (edict_t *self)
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
 	gi.linkentity (self);
+	G_FreeEdict(self);
 }
 
 mframe_t soldier_frames_death1 [] =
@@ -1153,16 +1153,6 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 
 
 // check for gib
-	if (self->health <= self->gib_health)
-	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 3; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
-		self->deadflag = DEAD_DEAD;
-		return;
-	}
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
@@ -1179,24 +1169,11 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	else // (self->s.skinnum == 5)
 		gi.sound (self, CHAN_VOICE, sound_death_ss, 1, ATTN_NORM, 0);
 
-	if (fabs((self->s.origin[2] + self->viewheight) - point[2]) <= 4)
-	{
-		// head shot
-		self->monsterinfo.currentmove = &soldier_move_death3;
-		return;
-	}
 
-	n = rand() % 5;
-	if (n == 0)
-		self->monsterinfo.currentmove = &soldier_move_death1;
-	else if (n == 1)
-		self->monsterinfo.currentmove = &soldier_move_death2;
-	else if (n == 2)
-		self->monsterinfo.currentmove = &soldier_move_death4;
-	else if (n == 3)
-		self->monsterinfo.currentmove = &soldier_move_death5;
-	else
-		self->monsterinfo.currentmove = &soldier_move_death6;
+
+
+	soldier_dead(self);
+
 }
 
 
@@ -1213,7 +1190,7 @@ void SP_monster_soldier_x (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
 	self->movetype = MOVETYPE_STEP;
-	self->solid = SOLID_TRIGGER;
+	self->solid = SOLID_BBOX;
 
 
 	sound_idle =	gi.soundindex ("soldier/solidle1.wav");

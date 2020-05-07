@@ -82,20 +82,10 @@ mframe_t tower_frames_stand1[] =
 	ai_stand, 0, NULL,
 	ai_stand, 0, NULL,
 	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
-	ai_stand, 0, NULL,
 	ai_stand, 0, NULL
+
 };
-mmove_t tower_move_stand1 = { FRAME_stand101, FRAME_stand130, tower_frames_stand1, tower_stand };
+mmove_t tower_move_stand1 = { FRAME_stand101, FRAME_stand110, tower_frames_stand1, tower_stand };
 
 mframe_t tower_frames_stand3[] =
 {
@@ -210,10 +200,7 @@ mmove_t tower_move_stand4 = { FRAME_stand401, FRAME_stand452, tower_frames_stand
 
 void tower_stand(edict_t *self)
 {
-	if ((self->monsterinfo.currentmove == &tower_move_stand3) || (random() < 0.8))
-		self->monsterinfo.currentmove = &tower_move_stand1;
-	else
-		self->monsterinfo.currentmove = &tower_move_stand3;
+	self->monsterinfo.currentmove = &tower_move_stand1;
 }
 
 
@@ -447,7 +434,7 @@ void tower_fire(edict_t *self, int flash_number)
 
 	if (self->s.skinnum <= 1)
 	{
-		monster_fire_blaster(self, start, aim, 100, 600, flash_index, EF_BLASTER);
+		monster_fire_blaster(self, start, aim, 100, 2000, flash_index, EF_BLASTER);
 	}
 	else if (self->s.skinnum <= 3)
 	{
@@ -737,10 +724,12 @@ void tower_sight(edict_t *self, edict_t *other)
 
 void tower_duck_hold(edict_t *self)
 {
+	/*
 	if (level.time >= self->monsterinfo.pausetime)
 		self->monsterinfo.aiflags &= ~AI_HOLD_FRAME;
 	else
 		self->monsterinfo.aiflags |= AI_HOLD_FRAME;
+		*/
 }
 
 mframe_t tower_frames_duck[] =
@@ -1128,7 +1117,8 @@ void SP_tower_x(edict_t *self)
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, 32);
 	self->movetype = MOVETYPE_STEP;
-	self->solid = SOLID_BBOX;
+	self->solid = SOLID_TRIGGER;
+
 
 	self->monsterinfo.aiflags = AI_TOWER;
 	

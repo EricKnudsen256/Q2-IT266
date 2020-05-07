@@ -251,6 +251,7 @@ typedef struct
 	int			max_edicts;
 	int			currentCash;	//Saucy: added cash
 	int			currentWave;
+	int			lives;
 	qboolean	startPlaced;
 	qboolean	goalPlaced;
 	qboolean	gameStarted;

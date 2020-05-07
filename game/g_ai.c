@@ -716,19 +716,19 @@ qboolean M_CheckAttack (edict_t *self)
 
 	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
 	{
-		chance = 0.4;
+		chance = 1;
 	}
 	else if (enemy_range == RANGE_MELEE)
 	{
-		chance = 0.2;
+		chance = 1;
 	}
 	else if (enemy_range == RANGE_NEAR)
 	{
-		chance = 0.1;
+		chance = 1;
 	}
 	else if (enemy_range == RANGE_MID)
 	{
-		chance = 0.02;
+		chance = 1;
 	}
 	else
 	{

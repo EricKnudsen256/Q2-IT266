@@ -434,7 +434,24 @@ void monster_think (edict_t *self)
 	}
 	M_CatagorizePosition (self);
 	M_WorldEffects (self);
-	M_SetEffects (self);
+	M_SetEffects(self);
+
+	if (self->monsterinfo.aiflags & AI_ENEMY)
+	{
+		edict_t	*goal = G_Find(NULL, FOFS(classname), "goal");
+		vec3_t	v;
+		float	len;
+
+		VectorSubtract(self->s.origin, goal->s.origin, v);
+		len = VectorLength(v);
+
+		if (len <= 80)
+		{
+			globals.lives -= 1;
+			gi.dprintf("Lives: %i\n", globals.lives);
+			G_FreeEdict(self);
+		}
+	}
 
 }
 

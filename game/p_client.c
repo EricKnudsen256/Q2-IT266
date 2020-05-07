@@ -609,6 +609,7 @@ void InitClientPersistant (gclient_t *client)
 	gitem_t		*item;
 
 	globals.currentCash = 5000;
+	globals.lives = 100;
 	globals.startPlaced = false;
 	globals.goalPlaced = false;
 
