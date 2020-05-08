@@ -178,31 +178,31 @@ void tank_run (edict_t *self);
 
 mframe_t tank_frames_start_run [] =
 {
-	ai_run,  0, NULL,
-	ai_run,  6, NULL,
-	ai_run,  6, NULL,
-	ai_run, 11, tank_footstep
+	ai_run,  4, NULL,
+	ai_run,  4, NULL,
+	ai_run,  4, NULL,
+	ai_run,  4, tank_footstep
 };
 mmove_t	tank_move_start_run = {FRAME_walk01, FRAME_walk04, tank_frames_start_run, tank_run};
 
 mframe_t tank_frames_run [] =
 {
 	ai_run, 4,	NULL,
-	ai_run, 5,	NULL,
-	ai_run, 3,	NULL,
-	ai_run, 2,	NULL,
-	ai_run, 5,	NULL,
-	ai_run, 5,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
 	ai_run, 4,	NULL,
 	ai_run, 4,	tank_footstep,
-	ai_run, 3,	NULL,
-	ai_run, 5,	NULL,
 	ai_run, 4,	NULL,
-	ai_run, 5,	NULL,
-	ai_run, 7,	NULL,
-	ai_run, 7,	NULL,
-	ai_run, 6,	NULL,
-	ai_run, 6,	tank_footstep
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	NULL,
+	ai_run, 4,	tank_footstep
 };
 mmove_t	tank_move_run = {FRAME_walk05, FRAME_walk20, tank_frames_run, NULL};
 
@@ -287,6 +287,7 @@ mmove_t	tank_move_pain3 = {FRAME_pain301, FRAME_pain316, tank_frames_pain3, tank
 
 void tank_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
+	/*
 	if (self->health < (self->max_health / 2))
 			self->s.skinnum |= 1;
 
@@ -321,6 +322,8 @@ void tank_pain (edict_t *self, edict_t *other, float kick, int damage)
 		self->monsterinfo.currentmove = &tank_move_pain2;
 	else
 		self->monsterinfo.currentmove = &tank_move_pain3;
+
+		*/
 };
 
 
@@ -654,6 +657,7 @@ void tank_doattack_rocket (edict_t *self)
 
 void tank_attack(edict_t *self)
 {
+	/*
 	vec3_t	vec;
 	float	range;
 	float	r;
@@ -696,6 +700,7 @@ void tank_attack(edict_t *self)
 		else
 			self->monsterinfo.currentmove = &tank_move_attack_blast;
 	}
+	*/
 }
 
 
@@ -705,12 +710,19 @@ void tank_attack(edict_t *self)
 
 void tank_dead (edict_t *self)
 {
+	globals.currentCash += self->monsterinfo.dropMoney;
+
+
+
 	VectorSet (self->mins, -16, -16, -16);
 	VectorSet (self->maxs, 16, 16, -0);
 	self->movetype = MOVETYPE_TOSS;
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
 	gi.linkentity (self);
+
+
+	G_FreeEdict(self);
 }
 
 mframe_t tank_frames_death1 [] =
@@ -755,18 +767,6 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	int		n;
 
 // check for gib
-	if (self->health <= self->gib_health)
-	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 1 /*4*/; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
-			ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", damage, GIB_METALLIC);
-		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/gear/tris.md2", damage, GIB_METALLIC);
-		self->deadflag = DEAD_DEAD;
-		return;
-	}
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
@@ -777,7 +777,8 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 	self->takedamage = DAMAGE_YES;
 
 	self->monsterinfo.currentmove = &tank_move_death;
-	
+
+	tank_dead(self);
 }
 
 
@@ -803,6 +804,9 @@ void SP_monster_tank (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
+	self->monsterinfo.dropMoney = 100 * globals.currentWave;
+	self->monsterinfo.goalDamage = 25;
+
 	sound_pain = gi.soundindex ("tank/tnkpain2.wav");
 	sound_thud = gi.soundindex ("tank/tnkdeth2.wav");
 	sound_idle = gi.soundindex ("tank/tnkidle1.wav");
@@ -827,7 +831,7 @@ void SP_monster_tank (edict_t *self)
 	}
 	else
 	{
-		self->health = 750;
+		self->health = (int)(125 * globals.currentWave);
 		self->gib_health = -200;
 	}
 

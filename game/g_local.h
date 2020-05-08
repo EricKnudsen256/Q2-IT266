@@ -423,6 +423,10 @@ typedef struct
 	int			nextframe;
 	float		scale;
 
+	int			dropMoney;
+	int			goalDamage;
+	int			level;
+
 	void		(*stand)(edict_t *self);
 	void		(*idle)(edict_t *self);
 	void		(*search)(edict_t *self);
@@ -895,7 +899,7 @@ struct gclient_s
 	qboolean	showinventory;		// set layout stat
 	qboolean	showhelp;
 	qboolean	showhelpicon;
-	qboolean	showBuy;
+	qboolean	showcash;
 
 	int			ammo_index;
 

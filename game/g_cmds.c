@@ -919,7 +919,7 @@ void Cmd_SpawnFast_f(edict_t *ent)
 	testEnt = G_Spawn();
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
-	SP_monster_parasite(testEnt);
+	SP_monster_berserk(testEnt);
 	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 void Cmd_SpawnSlow_f(edict_t *ent)
@@ -928,7 +928,7 @@ void Cmd_SpawnSlow_f(edict_t *ent)
 	testEnt = G_Spawn();
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
-	SP_monster_tank(testEnt);
+	SP_monster_gunner(testEnt);
 	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 void Cmd_SpawnBoss_f(edict_t *ent)
@@ -937,7 +937,7 @@ void Cmd_SpawnBoss_f(edict_t *ent)
 	testEnt = G_Spawn();
 	VectorCopy(ent->s.origin, testEnt->s.origin);
 
-	SP_monster_supertank(testEnt);
+	SP_monster_tank(testEnt);
 	testEnt->monsterinfo.aiflags = AI_ENEMY;
 }
 
@@ -1012,6 +1012,75 @@ void Cmd_Tower4_f(edict_t *ent)
 	}
 }
 
+void Cmd_Upgrade_f(edict_t *ent)
+{
+	vec3_t v, origin;
+	edict_t *e;
+	edict_t *closeTower;
+	int closest;
+	int i;
+	int upgradeCost;
+
+
+	closest = 10000;
+	for (i = 0; i < globals.num_edicts; i++)
+	{
+
+		e = &g_edicts[i];
+		VectorSubtract(ent->s.origin, e->s.origin, v);
+		if ((VectorLength(v) < closest) && (e->monsterinfo.aiflags & AI_TOWER))
+		{
+			closest = VectorLength(v);
+			closeTower = e;
+		}
+	}
+
+	if (!closeTower)
+	{
+		gi.dprintf("NO TOWER TO UPGRADE");
+		return;
+	}
+
+	if (closeTower->monsterinfo.aiflags & AI_TOWER)
+	{
+		if (closeTower->s.skinnum == 0)
+		{
+			upgradeCost = closeTower->monsterinfo.level * 100;
+		}
+		else if (closeTower->s.skinnum == 2)
+		{
+			upgradeCost = closeTower->monsterinfo.level * 200;
+		}
+		else if (closeTower->s.skinnum == 4)
+		{
+			upgradeCost = closeTower->monsterinfo.level * 300;
+		}
+		else if (closeTower->s.skinnum == 1)
+		{
+			upgradeCost = closeTower->monsterinfo.level * 400;
+		}
+
+		if (globals.currentCash >= upgradeCost)
+		{
+			globals.currentCash -= upgradeCost;
+			closeTower->monsterinfo.level += 1;
+			gi.dprintf("TOWER UPGRADED\n");
+
+			VectorMA(closeTower->s.origin, -0.02, closeTower->velocity, origin);
+
+			gi.WriteByte(svc_temp_entity);
+			gi.WriteByte(TE_ROCKET_EXPLOSION);
+			gi.WritePosition(origin);
+			gi.multicast(closeTower->s.origin, MULTICAST_PHS);
+		}
+		else
+		{
+			gi.dprintf("CANNOT UPGRADE, NEED %i\n", upgradeCost);
+		}
+	}
+
+}
+
 void Cmd_Start_f(edict_t *ent)
 {
 
@@ -1028,6 +1097,7 @@ void Cmd_Start_f(edict_t *ent)
 
 		SP_start(testEnt);
 		globals.startPlaced = true;
+		Cmd_God_f(ent);
 	}
 }
 
@@ -1056,10 +1126,15 @@ void Cmd_StartGame_f(edict_t *ent)
 	{
 		gi.dprintf("Game Already In Progress!\n");
 	}
-	else
+	else if (globals.goalPlaced && globals.startPlaced)
 	{
+		globals.currentCash = 300;
 		gi.dprintf("Game Started!\n");
 		globals.gameStarted = true;
+	}
+	else
+	{
+		gi.dprintf("Must Place Start And End!\n");
 	}
 }
 
@@ -1130,6 +1205,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Tower3_f(ent);
 	else if (Q_stricmp(cmd, "buy3") == 0)
 		Cmd_Tower4_f(ent);
+	else if (Q_stricmp(cmd, "upgrade") == 0)
+		Cmd_Upgrade_f(ent);
 
 	//Commands to place start/end
 	else if (Q_stricmp(cmd, "start") == 0)

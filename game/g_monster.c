@@ -70,7 +70,7 @@ void monster_fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damag
 
 void monster_fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype)
 {
-	fire_rocket (self, start, dir, damage, speed, damage+20, damage);
+	fire_rocket (self, start, dir, damage, speed, 200, damage);
 
 	gi.WriteByte (svc_muzzleflash2);
 	gi.WriteShort (self - g_edicts);
@@ -442,15 +442,113 @@ void monster_think (edict_t *self)
 		vec3_t	v;
 		float	len;
 
+		if (!self->enemy == goal)
+		{
+			FindTarget(self);
+		}
+
 		VectorSubtract(self->s.origin, goal->s.origin, v);
 		len = VectorLength(v);
 
 		if (len <= 80)
 		{
-			globals.lives -= 1;
+			globals.lives -= self->monsterinfo.goalDamage;
+
+			if (globals.lives < 0)
+			{
+				globals.lives = 0;
+			}
 			gi.dprintf("Lives: %i\n", globals.lives);
 			G_FreeEdict(self);
 		}
+	}
+
+	if (self->monsterinfo.aiflags & AI_TOWER && self->s.skinnum == 1)
+	{
+		edict_t	*ent;
+		edict_t	*ignore;
+		vec3_t	point;
+		vec3_t	dir;
+		vec3_t	start;
+		vec3_t	end;
+		int		dmg;
+		trace_t	tr;
+
+		dmg = 1 * self->monsterinfo.level;
+
+		ent = NULL;
+		while ((ent = findradius(ent, self->s.origin, 150)) != NULL)
+		{
+			if (ent == self)
+				continue;
+
+			if (ent == self->owner)
+				continue;
+
+			if (!ent->takedamage)
+				continue;
+
+			if (!ent->monsterinfo.aiflags & AI_ENEMY)
+				continue;
+
+			if (ent->client)
+				continue;
+
+			if (!(ent->svflags & SVF_MONSTER) && (!ent->client) && (strcmp(ent->classname, "misc_explobox") != 0))
+				continue;
+
+			VectorMA(ent->absmin, 0.5, ent->size, point);
+
+			VectorSubtract(point, self->s.origin, dir);
+			VectorNormalize(dir);
+
+			ignore = self;
+			VectorCopy(self->s.origin, start);
+			VectorMA(start, 2048, dir, end);
+
+			while (1)
+			{
+				
+				tr = gi.trace(start, NULL, NULL, end, ignore, CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_DEADMONSTER);
+				
+				if (!tr.ent)
+					break;
+
+				// hurt it if we can
+				if ((tr.ent->takedamage) && !(tr.ent->flags & FL_IMMUNE_LASER) && (tr.ent != self->owner))
+				{
+					T_Damage(tr.ent, self, self, vec3_origin, vec3_origin, vec3_origin, dmg, 1, DAMAGE_ENERGY, MOD_BFG_LASER);
+				}
+					
+				
+
+				// if we hit something that's not a monster or player we're done
+				if (!(tr.ent->svflags & SVF_MONSTER) && (!tr.ent->client))
+				{
+					gi.WriteByte(svc_temp_entity);
+					gi.WriteByte(TE_LASER_SPARKS);
+					gi.WriteByte(4);
+					gi.WritePosition(tr.endpos);
+					gi.WriteDir(tr.plane.normal);
+					gi.WriteByte(self->s.skinnum);
+					gi.multicast(tr.endpos, MULTICAST_PVS);
+					break;
+				}
+
+				ignore = tr.ent;
+				VectorCopy(tr.endpos, start);
+				
+				break;
+
+			}
+			gi.WriteByte(svc_temp_entity);
+			gi.WriteByte(TE_BFG_LASER);
+			gi.WritePosition(self->s.origin);
+			gi.WritePosition(tr.endpos);
+			gi.multicast(self->s.origin, MULTICAST_PHS);
+
+		}
+		
 	}
 
 }
@@ -476,7 +574,7 @@ void monster_use (edict_t *self, edict_t *other, edict_t *activator)
 	
 // delay reaction so if the monster is teleported, its sound is still heard
 	self->enemy = activator;
-	FoundTarget (self);
+	//FoundTarget (self);
 }
 
 
@@ -696,6 +794,8 @@ void monster_start_go (edict_t *self)
 		self->monsterinfo.stand (self);
 	}
 	
+
+
 	self->think = monster_think;
 	self->nextthink = level.time + FRAMETIME;
 	
@@ -735,6 +835,7 @@ void tower_start(edict_t *self)
 	self->think = walkmonster_start_go;
 	monster_start(self);
 }
+
 
 
 void flymonster_start_go (edict_t *self)

@@ -432,25 +432,29 @@ void tower_fire(edict_t *self, int flash_number)
 		VectorNormalize(aim);
 	}
 
-	if (self->s.skinnum <= 1)
+	if (self->s.skinnum == 0)
 	{
-		monster_fire_blaster(self, start, aim, 100, 2000, flash_index, EF_BLASTER);
+		monster_fire_blaster(self, start, aim, 20 * self->monsterinfo.level, 2000, flash_index, EF_BLASTER);
 	}
-	else if (self->s.skinnum <= 3)
+	else if (self->s.skinnum == 2)
 	{
-		monster_fire_shotgun(self, start, aim, 2, 1, DEFAULT_SHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SHOTGUN_COUNT, flash_index);
+		monster_fire_rocket(self, start, aim, 10 * self->monsterinfo.level, 2000, flash_index);
 	}
-	else
+	else if (self->s.skinnum == 4)
 	{
 		if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 			self->monsterinfo.pausetime = level.time + (3 + rand() % 8) * FRAMETIME;
 
-		monster_fire_bullet(self, start, aim, 2, 4, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, flash_index);
+		monster_fire_bullet(self, start, aim, 2 * self->monsterinfo.level, 4, 0, 0, flash_index);
 
 		if (level.time >= self->monsterinfo.pausetime)
 			self->monsterinfo.aiflags &= ~AI_HOLD_FRAME;
 		else
 			self->monsterinfo.aiflags |= AI_HOLD_FRAME;
+	}
+	else
+	{
+
 	}
 }
 
@@ -468,7 +472,7 @@ void tower_attack1_refire1(edict_t *self)
 		return;
 
 	if ((range(self, self->enemy) <= RANGE_NEAR))
-		self->monsterinfo.nextframe = FRAME_attak102;
+		self->monsterinfo.nextframe = FRAME_attak101;
 
 }
 
@@ -485,18 +489,18 @@ void tower_attack1_refire2(edict_t *self)
 
 mframe_t tower_frames_attack1[] =
 {
-	ai_charge, 0, NULL,
-	ai_charge, 0, NULL,
 	ai_charge, 0, tower_fire1,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
-	ai_charge, 0, tower_attack1_refire1,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL,
-	ai_charge, 0, NULL
+	ai_charge, 0, NULL,
+	ai_charge, 0, NULL,
+	ai_charge, 0, NULL,
+	ai_charge, 0, tower_attack1_refire1
 };
 mmove_t tower_move_attack1 = { FRAME_attak101, FRAME_attak112, tower_frames_attack1, tower_run };
 
@@ -608,12 +612,11 @@ mmove_t tower_move_attack3 = { FRAME_attak301, FRAME_attak309, tower_frames_atta
 void tower_fire4(edict_t *self)
 {
 	tower_fire(self, 3);
-	//
-	//	if (self->enemy->health <= 0)
+	//if (self->enemy->health <= 0)
 	//		return;
 	//
-	//	if ( ((skill->value == 3) && (random() < 0.5)) || (range(self, self->enemy) == RANGE_MELEE) )
-	//		self->monsterinfo.nextframe = FRAME_attak402;
+	//if ( (range(self, self->enemy) == RANGE_NEAR) )
+	//	 self->monsterinfo.nextframe = FRAME_attak402;
 }
 
 mframe_t tower_frames_attack4[] =
@@ -698,9 +701,14 @@ mmove_t tower_move_attack6 = { FRAME_runs01, FRAME_runs14, tower_frames_attack6,
 
 void tower_attack(edict_t *self)
 {
-
-	self->monsterinfo.currentmove = &tower_move_attack1;
-
+	if (self->s.skinnum == 4)
+	{
+		self->monsterinfo.currentmove = &tower_move_attack4;
+	}
+	else
+	{
+		self->monsterinfo.currentmove = &tower_move_attack1;
+	}
 }
 
 
@@ -1121,6 +1129,7 @@ void SP_tower_x(edict_t *self)
 
 
 	self->monsterinfo.aiflags = AI_TOWER;
+	self->monsterinfo.level = 1;
 	
 
 
@@ -1217,6 +1226,8 @@ void SP_tower_4(edict_t *self)
 
 	SP_tower_x(self);
 
+	self->radius_dmg = 5 * self->monsterinfo.level;
+	self->dmg_radius = 100;
 
 	gi.modelindex("models/objects/laser/tris.md2");
 	gi.soundindex("misc/lasfly.wav");
@@ -1225,4 +1236,6 @@ void SP_tower_4(edict_t *self)
 	self->s.skinnum = 1;
 	self->health = 100000;
 	self->gib_health = -30;
+
+	
 }

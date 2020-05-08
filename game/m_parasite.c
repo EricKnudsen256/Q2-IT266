@@ -170,31 +170,31 @@ void parasite_stand (edict_t *self)
 
 mframe_t parasite_frames_run [] =
 {
-	ai_run, 30, NULL,
-	ai_run, 30, NULL,
-	ai_run, 22, NULL,
-	ai_run, 19, NULL,
-	ai_run, 24, NULL,
-	ai_run, 28, NULL,
-	ai_run, 25, NULL
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL
 };
 mmove_t parasite_move_run = {FRAME_run03, FRAME_run09, parasite_frames_run, NULL};
 
 mframe_t parasite_frames_start_run [] =
 {
-	ai_run, 0,	NULL,
-	ai_run, 30, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
 };
 mmove_t parasite_move_start_run = {FRAME_run01, FRAME_run02, parasite_frames_start_run, parasite_run};
 
 mframe_t parasite_frames_stop_run [] =
 {	
-	ai_run, 20, NULL,
-	ai_run, 20,	NULL,
-	ai_run, 12, NULL,
 	ai_run, 10, NULL,
-	ai_run, 0,  NULL,
-	ai_run, 0,  NULL
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL,
+	ai_run, 10, NULL
 };
 mmove_t parasite_move_stop_run = {FRAME_run10, FRAME_run15, parasite_frames_stop_run, NULL};
 
@@ -315,6 +315,7 @@ static qboolean parasite_drain_attack_ok (vec3_t start, vec3_t end)
 
 void parasite_drain_attack (edict_t *self)
 {
+	/*
 	vec3_t	offset, start, f, r, end, dir;
 	trace_t	tr;
 	int damage;
@@ -361,6 +362,7 @@ void parasite_drain_attack (edict_t *self)
 
 	VectorSubtract (start, end, dir);
 	T_Damage (self->enemy, self, self, dir, self->enemy->s.origin, vec3_origin, damage, 0, DAMAGE_NO_KNOCKBACK, MOD_UNKNOWN);
+	*/
 }
 
 mframe_t parasite_frames_drain [] =
@@ -435,7 +437,7 @@ void parasite_attack (edict_t *self)
 //	if (random() <= 0.2)
 //		self->monsterinfo.currentmove = &parasite_move_break;
 //	else
-		self->monsterinfo.currentmove = &parasite_move_drain;
+		//self->monsterinfo.currentmove = &parasite_move_drain;
 }
 
 
@@ -454,6 +456,7 @@ void parasite_dead (edict_t *self)
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
 	gi.linkentity (self);
+	G_FreeEdict(self);
 }
 
 mframe_t parasite_frames_death [] =
@@ -472,18 +475,6 @@ void parasite_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 {
 	int		n;
 
-// check for gib
-	if (self->health <= self->gib_health)
-	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
-			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
-		self->deadflag = DEAD_DEAD;
-		return;
-	}
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
@@ -493,6 +484,9 @@ void parasite_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.currentmove = &parasite_move_death;
+	
+
+	parasite_dead(self);
 }
 
 /*
@@ -529,7 +523,7 @@ void SP_monster_parasite (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
-	self->health = 175;
+	self->health = (int)(5 * globals.currentWave);
 	self->gib_health = -50;
 	self->mass = 250;
 

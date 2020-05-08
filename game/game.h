@@ -252,6 +252,7 @@ typedef struct
 	int			currentCash;	//Saucy: added cash
 	int			currentWave;
 	int			lives;
+	int			spawned;
 	qboolean	startPlaced;
 	qboolean	goalPlaced;
 	qboolean	gameStarted;

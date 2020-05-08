@@ -294,6 +294,7 @@ static int CheckArmor (edict_t *ent, vec3_t point, vec3_t normal, int damage, in
 
 void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 {
+	return;
 	if (!(attacker->client) && !(attacker->svflags & SVF_MONSTER))
 		return;
 
@@ -324,11 +325,11 @@ void M_ReactToDamage (edict_t *targ, edict_t *attacker)
 				targ->oldenemy = attacker;
 				return;
 			}
-			targ->oldenemy = targ->enemy;
+			//targ->oldenemy = targ->enemy;
 		}
-		targ->enemy = attacker;
+		//targ->enemy = attacker;
 		if (!(targ->monsterinfo.aiflags & AI_DUCKED))
-			FoundTarget (targ);
+			//FoundTarget (targ);
 		return;
 	}
 
@@ -564,12 +565,12 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 		points = damage - 0.5 * VectorLength (v);
 		if (ent == attacker)
 			points = points * 0.5;
-		if (points > 0)
+		if (true)
 		{
 			if (CanDamage (ent, inflictor))
 			{
 				VectorSubtract (ent->s.origin, inflictor->s.origin, dir);
-				T_Damage (ent, inflictor, attacker, dir, inflictor->s.origin, vec3_origin, (int)points, (int)points, DAMAGE_RADIUS, mod);
+				T_Damage (ent, inflictor, attacker, dir, inflictor->s.origin, vec3_origin, (int)damage, (int)damage, DAMAGE_RADIUS, mod);
 			}
 		}
 	}

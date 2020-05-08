@@ -1,20 +1,40 @@
-﻿Build started 5/6/2020 10:47:22 PM.
+﻿Build started 5/7/2020 10:55:53 PM.
      1>Project "C:\Users\Eric\Git\IT266\quake2-full\game\game.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(357,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Z7 /nologo /W4 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\release\\" /Fd".\release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt m_soldier.c
-         m_soldier.c
-     1>m_soldier.c(283): warning C4100: 'self' : unreferenced formal parameter
-     1>m_soldier.c(412): warning C4100: 'damage' : unreferenced formal parameter
-     1>m_soldier.c(412): warning C4100: 'kick' : unreferenced formal parameter
-     1>m_soldier.c(412): warning C4100: 'other' : unreferenced formal parameter
-     1>m_soldier.c(775): warning C4100: 'self' : unreferenced formal parameter
-     1>m_soldier.c(797): warning C4100: 'other' : unreferenced formal parameter
-     1>m_soldier.c(1150): warning C4100: 'point' : unreferenced formal parameter
-     1>m_soldier.c(1150): warning C4100: 'damage' : unreferenced formal parameter
-     1>m_soldier.c(1150): warning C4100: 'attacker' : unreferenced formal parameter
-     1>m_soldier.c(1150): warning C4100: 'inflictor' : unreferenced formal parameter
-     1>m_soldier.c(1152): warning C4101: 'n' : unreferenced local variable
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Z7 /nologo /W4 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _WINDOWS /D _VC80_UPGRADE=0x0600 /D _WINDLL /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo".\release\\" /Fd".\release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt m_gunner.c m_tank.c t_start.c
+         m_gunner.c
+     1>m_gunner.c(46): warning C4100: 'other' : unreferenced formal parameter
+     1>m_gunner.c(283): warning C4100: 'damage' : unreferenced formal parameter
+     1>m_gunner.c(283): warning C4100: 'kick' : unreferenced formal parameter
+     1>m_gunner.c(283): warning C4100: 'other' : unreferenced formal parameter
+     1>m_gunner.c(283): warning C4100: 'self' : unreferenced formal parameter
+     1>m_gunner.c(344): warning C4100: 'point' : unreferenced formal parameter
+     1>m_gunner.c(344): warning C4100: 'damage' : unreferenced formal parameter
+     1>m_gunner.c(344): warning C4100: 'attacker' : unreferenced formal parameter
+     1>m_gunner.c(344): warning C4100: 'inflictor' : unreferenced formal parameter
+     1>m_gunner.c(346): warning C4101: 'n' : unreferenced local variable
+     1>m_gunner.c(410): warning C4100: 'eta' : unreferenced formal parameter
+     1>m_gunner.c(548): warning C4100: 'self' : unreferenced formal parameter
+         m_tank.c
+     1>m_tank.c(49): warning C4100: 'other' : unreferenced formal parameter
+     1>m_tank.c(288): warning C4100: 'damage' : unreferenced formal parameter
+     1>m_tank.c(288): warning C4100: 'kick' : unreferenced formal parameter
+     1>m_tank.c(288): warning C4100: 'other' : unreferenced formal parameter
+     1>m_tank.c(288): warning C4100: 'self' : unreferenced formal parameter
+     1>m_tank.c(658): warning C4100: 'self' : unreferenced formal parameter
+     1>m_tank.c(765): warning C4100: 'point' : unreferenced formal parameter
+     1>m_tank.c(765): warning C4100: 'damage' : unreferenced formal parameter
+     1>m_tank.c(765): warning C4100: 'attacker' : unreferenced formal parameter
+     1>m_tank.c(765): warning C4100: 'inflictor' : unreferenced formal parameter
+     1>m_tank.c(767): warning C4101: 'n' : unreferenced local variable
+         t_start.c
+     1>t_start.c(12): warning C4013: 'Cmd_SpawnNormal_f' undefined; assuming extern returning int
+     1>t_start.c(30): warning C4013: 'Cmd_SpawnFast_f' undefined; assuming extern returning int
+     1>t_start.c(66): warning C4013: 'Cmd_SpawnSlow_f' undefined; assuming extern returning int
+     1>t_start.c(84): warning C4013: 'Cmd_SpawnBoss_f' undefined; assuming extern returning int
+     1>t_start.c(105): warning C4100: 'self' : unreferenced formal parameter
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\SteamLibrary\steamapps\common\Quake 2 TD\baseq2\gamex86.dll" /INCREMENTAL:NO /NOLOGO winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:".\game.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"E:\SteamLibrary\steamapps\common\Quake 2 TD\baseq2\gamex86.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /BASE:"0x20000000" /DYNAMICBASE /NXCOMPAT /IMPLIB:".\..\release\gamex86.lib" /MACHINE:X86 /SAFESEH /DLL .\release\g_ai.obj
          .\release\g_chase.obj
@@ -72,4 +92,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.47
+Time Elapsed 00:00:00.64

@@ -411,6 +411,7 @@ mmove_t soldier_move_pain4 = {FRAME_pain401, FRAME_pain417, soldier_frames_pain4
 
 void soldier_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
+	/*
 	float	r;
 	int		n;
 
@@ -451,6 +452,7 @@ void soldier_pain (edict_t *self, edict_t *other, float kick, int damage)
 		self->monsterinfo.currentmove = &soldier_move_pain2;
 	else
 		self->monsterinfo.currentmove = &soldier_move_pain3;
+		*/
 }
 
 
@@ -541,10 +543,9 @@ void soldier_attack1_refire1 (edict_t *self)
 	if (self->enemy->health <= 0)
 		return;
 
-	if ( ((skill->value == 3) && (random() < 0.5)) || (range(self, self->enemy) == RANGE_MELEE) )
+	if ( (range(self, self->enemy) == RANGE_NEAR) )
 		self->monsterinfo.nextframe = FRAME_attak102;
-	else
-		self->monsterinfo.nextframe = FRAME_attak110;
+
 }
 
 void soldier_attack1_refire2 (edict_t *self)
@@ -566,13 +567,13 @@ mframe_t soldier_frames_attack1 [] =
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
-	ai_charge, 0,  soldier_attack1_refire1,
-	ai_charge, 0,  NULL,
-	ai_charge, 0,  soldier_cock,
-	ai_charge, 0,  soldier_attack1_refire2,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
-	ai_charge, 0,  NULL
+	ai_charge, 0,  NULL,
+	ai_charge, 0,  NULL,
+	ai_charge, 0,  NULL,
+	ai_charge, 0,  NULL,
+	ai_charge, 0,  soldier_attack1_refire1
 };
 mmove_t soldier_move_attack1 = {FRAME_attak101, FRAME_attak112, soldier_frames_attack1, soldier_run};
 
@@ -796,15 +797,11 @@ void soldier_attack(edict_t *self)
 
 void soldier_sight(edict_t *self, edict_t *other)
 {
-	if (random() < 0.5)
-		gi.sound (self, CHAN_VOICE, sound_sight1, 1, ATTN_NORM, 0);
-	else
-		gi.sound (self, CHAN_VOICE, sound_sight2, 1, ATTN_NORM, 0);
 
-	if ((skill->value > 0) && (range(self, self->enemy) >= RANGE_MID))
+	if ((range(self, self->enemy) >= RANGE_MID))
 	{
-		if (random() > 0.5)
-			self->monsterinfo.currentmove = &soldier_move_attack6;
+
+		self->monsterinfo.currentmove = &soldier_move_attack1;
 	}
 }
 
@@ -888,12 +885,16 @@ void soldier_fire7 (edict_t *self)
 
 void soldier_dead (edict_t *self)
 {
+	globals.currentCash += self->monsterinfo.dropMoney;
+
+
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
 	gi.linkentity (self);
+
 	G_FreeEdict(self);
 }
 
@@ -1192,6 +1193,9 @@ void SP_monster_soldier_x (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
+	self->monsterinfo.dropMoney = 20 * globals.currentWave;
+	self->monsterinfo.goalDamage = 1;
+
 
 	sound_idle =	gi.soundindex ("soldier/solidle1.wav");
 	sound_sight1 =	gi.soundindex ("soldier/solsght1.wav");
@@ -1238,7 +1242,7 @@ void SP_monster_soldier_light (edict_t *self)
 	gi.soundindex ("soldier/solatck2.wav");
 
 	self->s.skinnum = 0;
-	self->health = 20;
+	self->health = (int)(10 * globals.currentWave);
 	self->gib_health = -30;
 }
 

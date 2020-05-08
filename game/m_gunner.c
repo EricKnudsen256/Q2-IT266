@@ -197,14 +197,14 @@ void gunner_walk (edict_t *self)
 
 mframe_t gunner_frames_run [] =
 {
-	ai_run, 26, NULL,
-	ai_run, 9,  NULL,
-	ai_run, 9,  NULL,
-	ai_run, 9,  NULL,
-	ai_run, 15, NULL,
-	ai_run, 10, NULL,
-	ai_run, 13, NULL,
-	ai_run, 6,  NULL
+	ai_run, 3, NULL,
+	ai_run, 3,  NULL,
+	ai_run, 3,  NULL,
+	ai_run, 3,  NULL,
+	ai_run, 3, NULL,
+	ai_run, 3, NULL,
+	ai_run, 3, NULL,
+	ai_run, 3,  NULL
 };
 
 mmove_t gunner_move_run = {FRAME_run01, FRAME_run08, gunner_frames_run, NULL};
@@ -282,6 +282,7 @@ mmove_t gunner_move_pain1 = {FRAME_pain101, FRAME_pain118, gunner_frames_pain1, 
 
 void gunner_pain (edict_t *self, edict_t *other, float kick, int damage)
 {
+	/*
 	if (self->health < (self->max_health / 2))
 		self->s.skinnum = 1;
 
@@ -304,16 +305,24 @@ void gunner_pain (edict_t *self, edict_t *other, float kick, int damage)
 		self->monsterinfo.currentmove = &gunner_move_pain2;
 	else
 		self->monsterinfo.currentmove = &gunner_move_pain1;
+
+		*/
 }
 
 void gunner_dead (edict_t *self)
 {
+	globals.currentCash += self->monsterinfo.dropMoney;
+
+
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, -8);
 	self->movetype = MOVETYPE_TOSS;
 	self->svflags |= SVF_DEADMONSTER;
 	self->nextthink = 0;
 	gi.linkentity (self);
+
+
+	G_FreeEdict(self);
 }
 
 mframe_t gunner_frames_death [] =
@@ -337,17 +346,7 @@ void gunner_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	int		n;
 
 // check for gib
-	if (self->health <= self->gib_health)
-	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n= 0; n < 2; n++)
-			ThrowGib (self, "models/objects/gibs/bone/tris.md2", damage, GIB_ORGANIC);
-		for (n= 0; n < 4; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
-		self->deadflag = DEAD_DEAD;
-		return;
-	}
+
 
 	if (self->deadflag == DEAD_DEAD)
 		return;
@@ -357,6 +356,8 @@ void gunner_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 	self->monsterinfo.currentmove = &gunner_move_death;
+
+	gunner_dead(self);
 }
 
 
@@ -546,6 +547,7 @@ mmove_t gunner_move_attack_grenade = {FRAME_attak101, FRAME_attak121, gunner_fra
 
 void gunner_attack(edict_t *self)
 {
+	/*
 	if (range (self, self->enemy) == RANGE_MELEE)
 	{
 		self->monsterinfo.currentmove = &gunner_move_attack_chain;
@@ -557,6 +559,7 @@ void gunner_attack(edict_t *self)
 		else
 			self->monsterinfo.currentmove = &gunner_move_attack_chain;
 	}
+	*/
 }
 
 void gunner_fire_chain(edict_t *self)
@@ -603,7 +606,10 @@ void SP_monster_gunner (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
 
-	self->health = 175;
+	self->monsterinfo.dropMoney = 50 * globals.currentWave;
+	self->monsterinfo.goalDamage = 5;
+
+	self->health = (int)(40 * globals.currentWave);
 	self->gib_health = -70;
 	self->mass = 200;
 

@@ -439,11 +439,36 @@ qboolean FindTarget(edict_t *self)
 	}
 
 
+	if (self->monsterinfo.aiflags & AI_TOWER)
+	{
 
+		closest = 10000;
+		for (i = 0; i < globals.num_edicts; i++)
+		{
 
+			e = &g_edicts[i];
+			VectorSubtract(self->s.origin, e->s.origin, v);
 
+			if ((VectorLength(v) < closest) && (e->monsterinfo.aiflags & AI_ENEMY))
+			{
+				closest = VectorLength(v);
+				self->enemy = e;
+			}
+		}
 
+		if (!self->enemy)
+		{
+			return false;
+		}
 
+		FoundTarget(self);
+		return true;
+
+		//gi.dprintf("(%i %i %i)\n", (int)self->enemy->s.origin[0], (int)self->enemy->s.origin[1], (int)self->enemy->s.origin[2]);
+
+	}
+
+	return false;
 	if (self->monsterinfo.aiflags & AI_GOOD_GUY)
 	{
 		if (self->goalentity && self->goalentity->inuse && self->goalentity->classname)
@@ -608,34 +633,6 @@ qboolean FindTarget(edict_t *self)
 //
 // got one
 //
-
-	if (self->monsterinfo.aiflags & AI_TOWER)
-	{
-		
-		closest = 10000;
-		for (i = 0; i < globals.num_edicts; i++)
-		{
-
-			e = &g_edicts[i];
-			VectorSubtract(self->s.origin, e->s.origin, v);
-
-			if ((VectorLength(v) < closest) && (e->monsterinfo.aiflags & AI_ENEMY))
-			{
-				closest = VectorLength(v);
-				self->enemy = e;
-			}
-		}
-
-
-		//gi.dprintf("(%i %i %i)\n", (int)self->enemy->s.origin[0], (int)self->enemy->s.origin[1], (int)self->enemy->s.origin[2]);
-
-		if (self->enemy == client)
-		{
-			self->enemy = NULL;
-			return false;
-		}
-
-	}
 
 	//gi.dprintf("NEW TARGET\n");
 
@@ -904,7 +901,7 @@ qboolean ai_checkattack (edict_t *self, float dist)
 		{
 			self->enemy = self->oldenemy;
 			self->oldenemy = NULL;
-			HuntTarget (self);
+			//HuntTarget (self);
 		}
 		else
 		{

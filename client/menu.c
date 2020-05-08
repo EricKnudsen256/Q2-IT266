@@ -2242,7 +2242,7 @@ void Buy_MenuInit(void)
 
 	//Create tower buy bottons
 
-	s_buy_actions[0].generic.name = "$100: Tower 1";
+	s_buy_actions[0].generic.name = "$100: Blaster Tower";
 	s_buy_actions[0].generic.localdata[0] = 0;
 	s_buy_actions[0].generic.flags = QMF_LEFT_JUSTIFY;
 	s_buy_actions[0].generic.callback = BuyCallback;
@@ -2255,7 +2255,7 @@ void Buy_MenuInit(void)
 	Menu_AddItem(&s_buy_menu, &s_buy_actions[0]);
 
 
-	s_buy_actions[1].generic.name = "$200: Tower 2";
+	s_buy_actions[1].generic.name = "$200: Rocket Tower";
 	s_buy_actions[1].generic.localdata[1] = 1;
 	s_buy_actions[1].generic.flags = QMF_LEFT_JUSTIFY;
 	s_buy_actions[1].generic.callback = BuyCallback;
@@ -2268,7 +2268,7 @@ void Buy_MenuInit(void)
 	Menu_AddItem(&s_buy_menu, &s_buy_actions[1]);
 
 
-	s_buy_actions[2].generic.name = "$300: Tower 3";
+	s_buy_actions[2].generic.name = "$300: Machine Gun Tower";
 	s_buy_actions[2].generic.localdata[2] = 2;
 	s_buy_actions[2].generic.flags = QMF_LEFT_JUSTIFY;
 	s_buy_actions[2].generic.callback = BuyCallback;
@@ -2281,7 +2281,7 @@ void Buy_MenuInit(void)
 	Menu_AddItem(&s_buy_menu, &s_buy_actions[2]);
 
 
-	s_buy_actions[3].generic.name = "$400: Tower 4";
+	s_buy_actions[3].generic.name = "$400: Tesla Tower";
 	s_buy_actions[3].generic.localdata[3] = 3;
 	s_buy_actions[3].generic.flags = QMF_LEFT_JUSTIFY;
 	s_buy_actions[3].generic.callback = BuyCallback;
@@ -2329,30 +2329,42 @@ const char *Buy_MenuKey(int key)
 
 	if (key == K_ENTER)
 	{
+
 		switch (s_buy_menu.cursor)
 		{
 		case 0:
+
 			Cbuf_AddText(va("buy0\n"));
+			Cbuf_AddText(va("help\n"));
+			Cbuf_AddText(va("help\n"));
 			M_ForceMenuOff();
 			break;
 
 		case 1:
 			Cbuf_AddText(va("buy1\n"));
+			Cbuf_AddText(va("help\n"));
+			Cbuf_AddText(va("help\n"));
 			M_ForceMenuOff();
 			break;
 
 		case 2:
 			Cbuf_AddText(va("buy2\n"));
+			Cbuf_AddText(va("help\n"));
+			Cbuf_AddText(va("help\n"));
 			M_ForceMenuOff();
 			break;
 
 		case 3:
 			Cbuf_AddText(va("buy3\n"));
+			Cbuf_AddText(va("help\n"));
+			Cbuf_AddText(va("help\n"));
 			M_ForceMenuOff();
 			break;
 
 		case 4:
 			Cbuf_AddText(va("upgrade\n"));
+			Cbuf_AddText(va("help\n"));
+			Cbuf_AddText(va("help\n"));
 			M_ForceMenuOff();
 			break;
 

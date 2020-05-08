@@ -608,10 +608,13 @@ void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
 
-	globals.currentCash = 5000;
-	globals.lives = 100;
+	globals.spawned = 0;
+	globals.currentWave = 1;
+	globals.currentCash = 300;
+	globals.lives = 50;
 	globals.startPlaced = false;
 	globals.goalPlaced = false;
+	
 
 	memset (&client->pers, 0, sizeof(client->pers));
 
@@ -1006,6 +1009,7 @@ void respawn (edict_t *self)
 
 	// restart the entire server
 	gi.AddCommandString ("menu_loadgame\n");
+
 }
 
 /* 
@@ -1352,6 +1356,7 @@ void ClientBegin (edict_t *ent)
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
+
 }
 
 /*
@@ -1582,6 +1587,15 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	level.current_entity = ent;
 	client = ent->client;
 
+	
+
+	if (globals.lives <= 0)
+	{
+		player_die(ent, ent, ent, 1000000, vec3_origin);
+		globals.gameStarted = false;
+		gi.dprintf("GAME OVER!\n");
+	}
+
 	if (level.intermissiontime)
 	{
 		client->ps.pmove.pm_type = PM_FREEZE;
@@ -1746,6 +1760,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		if (other->inuse && other->client->chase_target == ent)
 			UpdateChaseCam(other);
 	}
+
+	Cmd_Help_f(ent);
+	Cmd_Help_f(ent);
 }
 
 
