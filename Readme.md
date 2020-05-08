@@ -60,11 +60,11 @@ All monsters will attempt to move towards that goal that was placed by the playe
 
 ## Separated Into Folder
 
-This mod can be found in the Quake 2 TD folder in the GitHub Repository.
+Shown off in presentation.
 
 ## Auto Launch Shortcut
 
-The auto launch shortcut can also be found in the Quake 2 TD folder.
+Shown off in presentation.
 
 ## UI Changes
 
